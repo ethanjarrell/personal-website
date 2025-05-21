@@ -1,0 +1,36 @@
+.header-container {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 8px 0px 0px 0px;
+    background-color: rgba(255,255,255,0.95); /* Slight translucency helps it feel less bulky */
+    font-family: 'YourHeadlineFont', sans-serif;
+    font-size: 1rem;
+    width: 100%;
+    margin-left: 25px;
+  }
+  
+  .logoImgLink{
+    padding: 0;
+    margin: 0;
+    height: 1.75rem;
+    width: 1.75rem;
+  }
+
+  .logoImg {
+    padding: 0;
+    margin: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  
+  .breadcrumb {
+    color: #555;
+  }
+  
+  .breadcrumb-separator {
+    color: #aaa;
+    padding: 0 5px;
+  }
+  
