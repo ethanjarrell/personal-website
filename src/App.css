@@ -5,6 +5,11 @@
   text-align: center;
 }
 
+:root {
+  --line-green: #7dcea0;
+  --line-blue: #5dade2;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

@@ -3,13 +3,29 @@
     flex-flow: column nowrap;
     align-items: flex-start;
     justify-content: flex-start;
-    padding: 8px 0px 0px 0px;
+    padding: 1rem 0px 1rem 0px;
     background-color: rgba(255,255,255,0.95); /* Slight translucency helps it feel less bulky */
     font-family: 'YourHeadlineFont', sans-serif;
     font-size: 1rem;
     width: 100%;
+    height: 70px;
     margin-left: 25px;
+    color: #7dcea0;
+    height: stretch;
   }
+  .horizontal-line-container {
+    width: 100%;
+    position: relative;
+}
+
+.breadcrumb-sketch-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
   
   .logoImgLink{
     padding: 0;
@@ -26,11 +42,29 @@
   }
   
   .breadcrumb {
-    color: #555;
+    color: #7dcea0;
   }
   
   .breadcrumb-separator {
-    color: #aaa;
+    color: #7dcea0;
     padding: 0 5px;
   }
+
+  @keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.header-animated {
+  opacity: 0;
+  animation: scaleIn 0.4s ease-out forwards;
+}
+
+
   

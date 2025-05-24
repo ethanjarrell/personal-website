@@ -11,13 +11,17 @@ interface LineProps {
   y2: number;
   color?: string;
   endLine?: boolean;
-  label?: string;
+  label?: React.ReactNode;
   labelAlignment?: string;
   onClick?: () => void;
+  delay?: number;
   ref?: React.RefObject<HTMLDivElement | null>;
+  drawSpeed?: number;
+  lineSpacing?: number;
 }
 
 const Home = () => {
+  let currentDelay = useRef(0);
   const navigate = useNavigate();
   const logoRef = useRef<HTMLImageElement>(null);
   const [lines, setLines] = useState<Array<LineProps>>([]);
@@ -34,6 +38,107 @@ const Home = () => {
   const [projectLabelBox, setProjectLabelBox] = useState<DOMRect | null>(null);
   const [aboutMeLabelBox, setAboutMeLabelBox] = useState<DOMRect | null>(null);
   const [youtubeLabelBox, setYoutubeLabelBox] = useState<DOMRect | null>(null);
+  const green = '#7dcea0';
+  const blue = '#5dade2';
+  const [labelVisibility, setLabelVisibility] = useState<boolean[]>([]);
+  const [dropdownOneLabelVisibility, setDropdownOneLabelVisibility] = useState<boolean[]>([]);
+  const [dropdownTwoLabelVisibility, setDropdownTwoLabelVisibility] = useState<boolean[]>([]);
+
+function getLetterFloat(min = 5, max = 80): number {
+  return Math.random() * (max - min) + min;
+}
+
+  const aboutAnimated = "About_Me".split("").map((char, i) => (
+  <span key={i} className="letter" style={{ animationDelay: `${i * getLetterFloat()}ms` }}>
+    {char}
+  </span>
+));
+
+const portfolioAnimated = "Projects/Portfolio".split("").map((char, i) => (
+  <span key={i} className="letter" style={{ animationDelay: `${i * getLetterFloat()}ms` }}>
+    {char}
+  </span>
+));
+
+const youtubeAnimated = "Youtube".split("").map((char, i) => (
+  <span key={i} className="letter" style={{ animationDelay: `${i * getLetterFloat()}ms` }}>
+    {char}
+  </span>
+));
+
+const bioAnimated = "Bio".split("").map((char, i) => (
+  <span key={i} className="letter" style={{ animationDelay: `${i * getLetterFloat()}ms` }}>
+    {char}
+  </span>
+));
+
+const donwloadResumeAnimated = "Download_Resume".split("").map((char, i) => (
+  <span key={i} className="letter" style={{ animationDelay: `${i * getLetterFloat()}ms` }}>
+    {char}
+  </span>
+));
+
+const virusSimulationAnimated = "Virus_Simulation".split("").map((char, i) => (
+  <span key={i} className="letter" style={{ animationDelay: `${i * getLetterFloat()}ms` }}>
+    {char}
+  </span>
+));
+
+function getRandomFloat(min = 0.05, max = 0.2): number {
+  return Math.random() * (max - min) + min;
+}
+
+function getDelayFloat(min = 0.05, max = 0.2): number {
+  return Math.random() * (max - min) + min;
+}
+
+  useEffect(() => {
+  if (lines.length === 0) return;
+
+  const timeouts = lines.map((line, i) =>
+    setTimeout(() => {
+      setLabelVisibility(prev => {
+        const updated = [...prev];
+        updated[i] = true;
+        return updated;
+      });
+    }, (line.delay ?? 0) + (line.delay ?? 0) + 300)
+  );
+
+  return () => timeouts.forEach(clearTimeout);
+}, [lines]);
+
+useEffect(() => {
+  if (dropdownOneLines.length === 0) return;
+
+  const timeouts = dropdownOneLines.map((line, i) =>
+    setTimeout(() => {
+      setDropdownOneLabelVisibility(prev => {
+        const updated = [...prev];
+        updated[i] = true;
+        return updated;
+      });
+    }, (line.delay ?? 0) + 300)
+  );
+
+  return () => timeouts.forEach(clearTimeout);
+}, [dropdownOneLines]);
+
+useEffect(() => {
+  if (dropdownTwoLines.length === 0) return;
+
+  const timeouts = dropdownTwoLines.map((line, i) =>
+    setTimeout(() => {
+      setDropdownTwoLabelVisibility(prev => {
+        const updated = [...prev];
+        updated[i] = true;
+        return updated;
+      });
+    }, (line.delay ?? 0) + 300)
+  );
+
+  return () => timeouts.forEach(clearTimeout);
+}, [dropdownTwoLines]);
 
   const handleProjectsClick = () => {
     const box = projectLabelRef.current?.getBoundingClientRect();
@@ -64,20 +169,21 @@ const Home = () => {
     const calculateLines = () => {
       const containerBox = containerRef.current?.getBoundingClientRect();
       const logoBox = logoRef.current?.getBoundingClientRect();
-  
+      
       if (containerBox && logoBox) {
+        currentDelay.current = 0;
         const startX = logoBox.left + logoBox.width / 2;
         const startY = logoBox.top + containerBox.height * 0.02;
         const endY = containerBox.height * 0.2;
         const logoCenterX = logoBox.left + logoBox.width / 2 - containerBox.left;
         const logoCenterY = logoBox.top + logoBox.height / 2 - containerBox.top;
-        setLines([
+        const steps = [
           { 
             x1: startX, 
             y1: startY, 
             x2: startX, 
             y2: endY, 
-            color: '#5dade2  ',
+            color: blue,
             endLine: false
            },
           { 
@@ -85,7 +191,7 @@ const Home = () => {
             y1: endY, 
             x2: startX + containerBox.width * 0.2, 
             y2: endY, 
-            color: '#5dade2 ',
+            color: blue,
             endLine: false
           },
           { 
@@ -93,7 +199,7 @@ const Home = () => {
             y1: endY, 
             x2: startX + containerBox.width * 0.2, 
             y2: containerBox.height * 0.4, 
-            color: '#5dade2 ',
+            color: blue,
             endLine: false
           },
           { 
@@ -101,19 +207,19 @@ const Home = () => {
             y1: containerBox.height * 0.4,
             x2: startX + containerBox.width * 0.25, 
             y2: containerBox.height * 0.4, 
-            color: '#5dade2',
+            color: blue,
             endLine: true,
-            label: 'About Me',
+            label: aboutAnimated,
             labelAlignment: 'right',
             onClick: () => handleAboutMeClick(),
-            ref: aboutMeLabelRef,
+            ref: aboutMeLabelRef
           },
           {
             x1: logoCenterX - containerBox.width * 0.075,
             y1: logoCenterY,
             x2: logoCenterX - containerBox.width * 0.175,
             y2: logoCenterY,
-            color: '#7dcea0',
+            color: green,
             endLine: false
           },
           {
@@ -121,7 +227,7 @@ const Home = () => {
             y1: logoCenterY,
             x2: logoCenterX - containerBox.width * 0.175,
             y2: endY - containerBox.height * 0.08,
-            color: '#7dcea0',
+            color: green,
             endLine: false
           },
           {
@@ -129,19 +235,19 @@ const Home = () => {
             y1: endY - containerBox.height * 0.08,
             x2: logoCenterX - containerBox.width * 0.250,
             y2: endY - containerBox.height * 0.08,
-            color: '#7dcea0',
+            color: green,
             endLine: true,
-            label: 'Projects/Portfolio',
+            label: portfolioAnimated,
             labelAlignment: 'left',
             onClick: () => handleProjectsClick(),
-            ref: projectLabelRef,
+            ref: projectLabelRef
           },
           {
             x1: logoCenterX - containerBox.width * 0.03,
             y1: logoCenterY + containerBox.height * 0.04,
             x2: logoCenterX - containerBox.width * 0.03,
             y2: logoCenterY + containerBox.height * 0.2,
-            color: '#7dcea0',
+            color: green,
             endLine: false
           },
           {
@@ -149,24 +255,33 @@ const Home = () => {
             y1: logoCenterY + containerBox.height * 0.2,
             x2: logoCenterX + containerBox.width * 0.2,
             y2: logoCenterY + containerBox.height * 0.2,
-            color: '#7dcea0',
+            color: green,
             endLine: true,
-            label: 'Youtube',
+            label: youtubeAnimated,
             labelAlignment: 'bottom',
             onClick: () => handleYoutubeClick(),
-            ref: youtubeLabelRef,
+            ref: youtubeLabelRef
           }
-        ]);
+        ];
+        steps.forEach(step => {
+          const drawSpeed = getRandomFloat(); 
+          const delay = getDelayFloat();
+          currentDelay.current += (delay + drawSpeed) * 1000; 
+          lines.push({
+            ...step,
+            delay: currentDelay.current,
+            drawSpeed,
+          });
+        });
+        setLines(lines);
       }
     };
   
     calculateLines(); // run on first mount
-    window.addEventListener('resize', calculateLines);
-    console.log(window.innerWidth);
-    return () => window.removeEventListener('resize', calculateLines);
   }, []);
 
   useEffect(() => {
+  
     const updateDropdownLines = () => {
       if (!showAboutMeDropdown || !aboutMeLabelRef.current || !containerRef.current) return;
     
@@ -183,58 +298,62 @@ const Home = () => {
           y1: y,
           x2: x + containerBox.width * 0.03,
           y2: y,
-          color: '#5dade2',
+          color: blue,
+          delay: 100,
+          lineSpacing: 0,
         },
         {
           x1: x + containerBox.width * 0.03,
           y1: y,
           x2: x + containerBox.width * 0.03,
           y2: y + containerBox.height * 0.1,
-          color: '#5dade2',
+          color: blue,
+          delay: 300,
+          lineSpacing: 0,
         },
         {
           x1: x + containerBox.width * 0.03,
           y1: y + containerBox.height * 0.1,
           x2: x - containerBox.width * 0.03,
           y2: y + containerBox.height * 0.1,
-          color: '#5dade2',
+          color: blue,
           endLine: true,
-          label: 'Bio',
-          labelAlignment: 'left',
+          label: bioAnimated,
+          labelAlignment: 'right',
           onClick: () => navigate('/about'),
+          delay: 500,
+          lineSpacing: 18,
         },
         {
           x1: x + containerBox.width * 0.03,
           y1: y + containerBox.height * 0.1,
           x2: x + containerBox.width * 0.03,
           y2: y + containerBox.height * 0.15,
-          color: '#5dade2',
+          color: blue,
+          delay: 700,
+          lineSpacing: 0,
         },
         {
           x1: x + containerBox.width * 0.03,
           y1: y + containerBox.height * 0.15,
           x2: x - containerBox.width * 0.03,
           y2: y + containerBox.height * 0.15,
-          color: '#5dade2',
+          color: blue,
           endLine: true,
-          label: 'Download Resume',
-          labelAlignment: 'left',
-          onClick: () => navigate('/resumedownload'),
+          label: donwloadResumeAnimated,
+          labelAlignment: 'right',
+          onClick: () => window.open('/resume.pdf', '_blank'),
+          delay: 900,
+          lineSpacing: 15,
         },
       ];
     
       setDropdownTwoLines(dropdownLines);
-      window.addEventListener('resize', updateDropdownLines);
-      return () => window.removeEventListener('resize', updateDropdownLines);
     };
     
   
     updateDropdownLines();
-    window.addEventListener('resize', updateDropdownLines);
   
-    return () => {
-      window.removeEventListener('resize', updateDropdownLines);
-    };
   }, [showAboutMeDropdown, aboutMeLabelBox]);
 
   useEffect(() => {
@@ -254,40 +373,37 @@ const Home = () => {
           y1: y,
           x2: x - containerBox.width * 0.03,
           y2: y,
-          color: '#7dcea0',
+          color: green,
+          delay: 100,
         },
         {
           x1: x - containerBox.width * 0.03,
           y1: y,
           x2: x - containerBox.width * 0.03,
           y2: y + containerBox.height * 0.1,
-          color: '#7dcea0',
+          color: green,
+          delay: 300,
         },
         {
           x1: x - containerBox.width * 0.03,
           y1: y + containerBox.height * 0.1,
           x2: x + containerBox.width * 0.03,
           y2: y + containerBox.height * 0.1,
-          color: '#7dcea0',
+          color: green,
           endLine: true,
-          label: 'Virus Simulation',
+          label: virusSimulationAnimated,
           labelAlignment: 'right',
           onClick: () => navigate('/virus'),
+          delay: 500,
         },
       ];
     
       setDropdownOneLines(dropdownLines);
-      window.addEventListener('resize', updateDropdownLines);
-      return () => window.removeEventListener('resize', updateDropdownLines);
     };
     
   
     updateDropdownLines();
-    window.addEventListener('resize', updateDropdownLines);
   
-    return () => {
-      window.removeEventListener('resize', updateDropdownLines);
-    };
   }, [showProjectDropdown]);
   
   
@@ -297,8 +413,8 @@ const Home = () => {
 
       {lines.map((line, i) => (
         <React.Fragment key={i}>
-          <SketchLine {...line} />
-          {line.endLine && line.label && (
+          <SketchLine {...line} mode="screen"/>
+          {line.endLine && line.label && labelVisibility[i] && (
             <div
               className="menu-label"
               style={{
@@ -314,21 +430,21 @@ const Home = () => {
               ref={line.ref}
             >
               {line.label}
-            </div>
+                          </div>
           )}
         </React.Fragment>
       ))}
 {dropdownOneLines.map((line, i) => (
   <React.Fragment key={`dropdown-line-${i}`}>
-    <SketchLine {...line} />
-    {line.endLine && line.label && (
+    <SketchLine {...line} mode="screen"/>
+    {line.endLine && line.label && dropdownOneLabelVisibility[i] && (
       <div
         className="menu-label"
         style={{
           position: 'absolute',
           left:
             line.labelAlignment === 'right'
-              ? line.x2 + 30
+              ? line.x2 + 40 
               : line.labelAlignment === 'left'
               ? line.x2 - 250
               : line.x2 - 30,
@@ -349,15 +465,15 @@ const Home = () => {
 
 {dropdownTwoLines.map((line, i) => (
   <React.Fragment key={`dropdown-line-${i}`}>
-    <SketchLine {...line} />
-    {line.endLine && line.label && (
+    <SketchLine {...line} mode="screen"/>
+    {line.endLine && line.label && dropdownTwoLabelVisibility[i] && (
       <div
         className="menu-label"
         style={{
           position: 'absolute',
           left:
             line.labelAlignment === 'right'
-              ? line.x2 + 30
+              ? line.x2 - line.label.toString().length 
               : line.labelAlignment === 'left'
               ? line.x2 - 250
               : line.x2 - 30,

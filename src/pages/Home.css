@@ -10,10 +10,42 @@
     overflow: hidden; 
   }
 
+  svg path {
+  vector-effect: non-scaling-stroke;
+}
+
 .logo {
+    position: absolute;
     height: 6em;
     padding: 1.5em;
     will-change: filter;
     transition: filter 300ms;
     z-index: 1;
 }
+
+.letter {
+  opacity: 0;
+  display: inline-block;
+  transform: scale(0);
+  animation: popIn 0.4s forwards;
+}
+
+.rightAlignedText {
+  text-align: right;
+}
+
+@keyframes popIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+
+

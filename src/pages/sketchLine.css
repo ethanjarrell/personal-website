@@ -1,0 +1,10 @@
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+    animation-duration: 2.5s;
+    animation-delay: .5s;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.1, -0.6, 0.2, 0);
+  }
+}
